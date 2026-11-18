@@ -74,3 +74,10 @@ node ~/.agents/skills/lanhu/scripts/lanhu_export.mjs /path/to/existing-export-di
 - 素材文件名是蓝湖原始图层名（通常是中文），接入工程时自己建命名映射
 - 切片优先用透明母图；只有缺母图时才回退整图裁切，并会标记 `design-crop`
 - 导出通过只代表设计数据准备好了，不代表页面实现完成
+
+## 同步脚本
+
+| 脚本 | 作用 |
+|---|---|
+| `./publish.sh` | 把 `~/.agents/skills/lanhu` 同步到本仓库并推送；**推送前扫描真实 id，命中就中止** |
+| `./install.sh` | 把本仓库安装到 `~/.agents/skills/lanhu`（已有则先备份为 `lanhu.bak-<时间戳>`） |
