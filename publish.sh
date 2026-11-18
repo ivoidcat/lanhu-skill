@@ -25,6 +25,7 @@ if grep -rn "客户-20" "$SRC" --include='*.md' 2>/dev/null | head -1 | grep -q 
 fi
 
 rsync -a --delete \
+  --exclude '.git' \
   --exclude '.DS_Store' \
   --exclude 'README.md' \
   --exclude '.gitignore' \

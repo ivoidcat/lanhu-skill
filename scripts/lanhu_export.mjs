@@ -28,6 +28,7 @@ import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { getImageInfo } from "./lanhu_nav.mjs";
 import { buildPageSpec, implementationGuide, writePageSpec } from "./lanhu_spec.mjs";
+import { writeLayoutMap } from "./lanhu_layout_map.mjs";
 
 const DEFAULT_MAGICK = "/opt/homebrew/bin/magick";
 
@@ -564,10 +565,19 @@ export async function refreshImplementation(outDir, { magickPath = DEFAULT_MAGIC
   const implementationFile = "implementation.md";
   const guide = implementationGuide(pages);
   await fs.writeFile(path.join(outDir, implementationFile), guide);
+  let layoutMapFile = null;
+  try {
+    layoutMapFile = await writeLayoutMap(outDir, pages);
+  } catch (e) {
+    // 布局图只是加速产物，生成失败不能影响导出
+    previewErrors.push({ page: "layout_map", error: String(e).slice(0, 300) });
+  }
+  manifest.layoutMapFile = layoutMapFile;
   await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2));
   return {
     implementationFile,
     implementationBytes: Buffer.byteLength(guide),
+    layoutMapFile,
     overviewFile,
     assetPreviews: manifest.pages.map((p) => ({ page: p.n, file: p.previewFile })),
     previewErrors,
